@@ -1,0 +1,8 @@
+{
+  "name": "Food Cost Calculator (New)",
+  "description": "Calculate recipe food costs, track profit margins, and automatically parse ingredient prices from invoices or Excel sheets using AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

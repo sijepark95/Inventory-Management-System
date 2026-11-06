@@ -1,0 +1,6 @@
+{
+  "summary": "Implementation plan for replacing the Grocery tab under Food Cost with an Industrial Products catalog, stock, and purchase history hub, and adding Document-level + Per-Item Ingredient vs. Industrial Product routing in AI Document Parser while leaving existing Ingredient logic completely untouched.",
+  "updatedAt": "2026-11-03T22:28:30.319137752Z",
+  "requestFeedback": true,
+  "userFacing": true
+}

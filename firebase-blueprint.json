@@ -1,0 +1,366 @@
+{
+  "entities": {
+    "ingredient": {
+      "title": "Ingredient",
+      "description": "An ingredient with its price and unit details.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string" },
+        "pricePerGram": { "type": "number" },
+        "source": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "price", "quantity", "unit", "pricePerGram"]
+    },
+    "recipe": {
+      "title": "Recipe",
+      "description": "A recipe consisting of multiple ingredients, tracking target costs and margins.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "ingredients": {
+          "type": "array",
+          "description": "List of ingredient linkages with their gram weights"
+        },
+        "sellingPrice": { "type": "number" },
+        "expectedYield": { "type": "number" },
+        "costPerPortion": { "type": "number" },
+        "totalCost": { "type": "number" },
+        "profitMargin": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "ingredients", "sellingPrice", "expectedYield"]
+    },
+    "invoice": {
+      "title": "Invoice",
+      "description": "A processed invoice or spreadsheet parsed by Gemini, optionally including the original document/image attachment.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fileName": { "type": "string" },
+        "invoiceNumber": { "type": "string" },
+        "vendor": { "type": "string" },
+        "issueDate": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "notes": { "type": "string" },
+        "fileUrl": { "type": "string", "description": "Stored image or document data URL / file attachment" },
+        "fileType": { "type": "string", "description": "MIME type of the attached file" },
+        "fileSize": { "type": "number", "description": "Size in bytes of the attached file" },
+        "items": {
+          "type": "array",
+          "description": "Parsed items with their price, quantity, unit, and matching details"
+        },
+        "status": { "type": "string", "enum": ["pending_review", "applied", "paid", "unpaid", "overdue", "void"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["fileName", "items", "status", "createdAt"]
+    },
+    "timecard": {
+      "title": "Timecard",
+      "description": "An employee shift record with calculated hours, unpaid breaks, and anomaly flags.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "employeeName": { "type": "string" },
+        "date": { "type": "string" },
+        "clockIn": { "type": "string" },
+        "clockOut": { "type": "string" },
+        "totalHours": { "type": "number" },
+        "unpaidBreakMinutes": { "type": "number" },
+        "paidHours": { "type": "number" },
+        "isAutoClockOut": { "type": "boolean" },
+        "isOver8PM": { "type": "boolean" },
+        "anomalies": {
+          "type": "array",
+          "description": "List of discovered anomalies (e.g., auto clockout, over 8pm shift, or custom alerts)"
+        },
+        "employeeCode": { "type": "string" },
+        "job": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["employeeName", "date", "clockIn", "clockOut", "totalHours", "unpaidBreakMinutes", "paidHours", "isAutoClockOut", "isOver8PM", "anomalies", "ownerId"]
+    },
+    "employee": {
+      "title": "Employee",
+      "description": "An employee profile, tracking standard hourly rate, role and naming.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "employeeCode": { "type": "string" },
+        "hourlyRate": { "type": "number" },
+        "role": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "hourlyRate", "role", "ownerId"]
+    },
+    "dailySale": {
+      "title": "DailySale",
+      "description": "A daily sales entry tracking quantity sold, selling price, food cost and calculated profit margins.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string" },
+        "recipeId": { "type": "string" },
+        "recipeName": { "type": "string" },
+        "quantitySold": { "type": "number" },
+        "sellingPrice": { "type": "number" },
+        "costPerPortion": { "type": "number" },
+        "totalRevenue": { "type": "number" },
+        "totalCost": { "type": "number" },
+        "margin": { "type": "number" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["date", "recipeId", "recipeName", "quantitySold", "sellingPrice", "costPerPortion", "totalRevenue", "totalCost", "margin", "ownerId"]
+    },
+    "inventoryConsumption": {
+      "title": "InventoryConsumption",
+      "description": "Ingredient consumption tracking recorded from suppliers/vendors",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string" },
+        "vendorName": { "type": "string" },
+        "ingredientId": { "type": "string" },
+        "ingredientName": { "type": "string" },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string" },
+        "pricePerPack": { "type": "number" },
+        "totalCost": { "type": "number" },
+        "recordedBy": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["date", "vendorName", "ingredientId", "ingredientName", "quantity", "unit", "pricePerPack", "totalCost", "recordedBy", "ownerId"]
+    },
+    "salesUpload": {
+      "title": "SalesUpload",
+      "description": "An uploaded sales Excel spreadsheet log with metadata details.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fileName": { "type": "string" },
+        "fileSize": { "type": "string" },
+        "uploadedAt": { "type": "string", "format": "date-time" },
+        "uploadedBy": { "type": "string" },
+        "sheetNames": { "type": "array" },
+        "rowCount": { "type": "number" },
+        "detectedDate": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["fileName", "fileSize", "uploadedAt", "uploadedBy", "sheetNames", "rowCount", "detectedDate", "ownerId", "status"]
+    },
+    "groceryPurchase": {
+      "title": "GroceryPurchase",
+      "description": "A grocery store purchase receipt record.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "storeName": { "type": "string" },
+        "date": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "items": { "type": "array" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["storeName", "date", "totalAmount", "items", "ownerId"]
+    },
+    "groceryShoppingItem": {
+      "title": "GroceryShoppingItem",
+      "description": "A shopping list item for grocery runs.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string" },
+        "isChecked": { "type": "boolean" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "quantity", "unit", "ownerId"]
+    },
+    "restaurant": {
+      "title": "Restaurant",
+      "description": "A restaurant location profile.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "contactName": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "ownerId"]
+    },
+    "department": {
+      "title": "Department",
+      "description": "A custom restaurant department or category.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "restaurantId": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "ownerId"]
+    },
+    "vendor": {
+      "title": "Vendor",
+      "description": "A supplier or vendor profile.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "contactName": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "ownerId"]
+    },
+    "orderList": {
+      "title": "OrderList",
+      "description": "A purchase order list for a vendor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "vendorName": { "type": "string" },
+        "items": { "type": "array" },
+        "status": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["vendorName", "items", "ownerId"]
+    },
+    "inventoryCount": {
+      "title": "InventoryCount",
+      "description": "A historical stocktake count sheet log.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string" },
+        "totalValue": { "type": "number" },
+        "totalPounds": { "type": "number" },
+        "totalItemsCount": { "type": "number" },
+        "lowStockCount": { "type": "number" },
+        "items": { "type": "array" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["date", "totalValue", "items", "ownerId"]
+    },
+    "activeShift": {
+      "title": "ActiveShift",
+      "description": "An active employee clock-in shift.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "employeeId": { "type": "string" },
+        "employeeName": { "type": "string" },
+        "status": { "type": "string" },
+        "ownerId": { "type": "string" }
+      },
+      "required": ["employeeId", "employeeName", "status", "ownerId"]
+    },
+    "share": {
+      "title": "Share",
+      "description": "A workspace collaboration share record.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "invitedEmail": { "type": "string" },
+        "role": { "type": "string" }
+      },
+      "required": ["ownerId", "invitedEmail", "role"]
+    }
+  },
+  "firestore": {
+    "/ingredients/{ingredientId}": {
+      "schema": "ingredient",
+      "description": "Store individual master ingredient items and their current parsed unit costs."
+    },
+    "/recipes/{recipeId}": {
+      "schema": "recipe",
+      "description": "Store user recipes with references to ingredients, weights, yields, and pricing."
+    },
+    "/invoices/{invoiceId}": {
+      "schema": "invoice",
+      "description": "Store processed supplier invoices and line items extracted via Gemini."
+    },
+    "/timecards/{timecardId}": {
+      "schema": "timecard",
+      "description": "Store employee clock-in/out records with computed anomalies."
+    },
+    "/employees/{employeeId}": {
+      "schema": "employee",
+      "description": "Store restaurant staff details, hourly rates, and standard roles."
+    },
+    "/dailySales/{saleId}": {
+      "schema": "dailySale",
+      "description": "Store restaurant portion sales and daily gross margins."
+    },
+    "/inventory_consumptions/{logId}": {
+      "schema": "inventoryConsumption",
+      "description": "Store supplier ingredient consumption history logs with real-time stock-deduction."
+    },
+    "/salesUploads/{uploadId}": {
+      "schema": "salesUpload",
+      "description": "Store Excel/CSV sales spreadsheet metadata and upload history."
+    },
+    "/groceryPurchases/{purchaseId}": {
+      "schema": "groceryPurchase",
+      "description": "Store grocery store purchase logs and receipts."
+    },
+    "/groceryShoppingList/{itemId}": {
+      "schema": "groceryShoppingItem",
+      "description": "Store grocery shopping list items."
+    },
+    "/restaurants/{restaurantId}": {
+      "schema": "restaurant",
+      "description": "Store restaurant location profiles."
+    },
+    "/departments/{departmentId}": {
+      "schema": "department",
+      "description": "Store custom restaurant departments."
+    },
+    "/vendors/{vendorId}": {
+      "schema": "vendor",
+      "description": "Store supplier and vendor profiles."
+    },
+    "/orderLists/{orderListId}": {
+      "schema": "orderList",
+      "description": "Store vendor purchase order lists."
+    },
+    "/inventory_counts/{countId}": {
+      "schema": "inventoryCount",
+      "description": "Store historical stocktake count sheets."
+    },
+    "/active_shifts/{shiftId}": {
+      "schema": "activeShift",
+      "description": "Store active employee shifts."
+    },
+    "/shares/{shareId}": {
+      "schema": "share",
+      "description": "Store workspace collaborator invitations and roles."
+    }
+  }
+}
